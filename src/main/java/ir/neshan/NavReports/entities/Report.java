@@ -1,34 +1,48 @@
 package ir.neshan.NavReports.entities;
 
 import jakarta.persistence.*;
+import lombok.*;
 import org.postgis.Point;
+import org.springframework.data.annotation.CreatedDate;
 
-import java.sql.Time;
+import java.util.Date;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @OneToOne
-    ReportType reportType;
+    private ReportType reportType;
 
-    @OneToOne
-    User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @OneToOne
-    Operator operator;
+    @ManyToOne
+    @JoinColumn(name = "operator_id")
+    private Operator operator;
 
-    String status; // it can be under-review , approved, rejected
+    @Enumerated(EnumType.STRING)
+    private String status; // it can be under-review , approved, rejected
 
-    Integer like;
+    private Integer like;
 
-    Integer dislike;
+    private Integer dislike;
 
-    Time reportTime;
+    @CreatedDate
+    private Date reportTime = new Date();
 
-    Point location;
+    private Point location;
+
+    private boolean isValidated = false;
 
 }
+
