@@ -21,6 +21,4 @@ public class ReportType {
     private String type;
 
     private Long duration;
-
-
 }

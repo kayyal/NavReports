@@ -3,7 +3,6 @@ package ir.neshan.NavReports.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.postgis.Point;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
@@ -26,23 +25,21 @@ public class Report {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "operator_id")
-    private Operator operator;
 
     @Enumerated(EnumType.STRING)
-    private String status; // it can be under-review , approved, rejected
+    private Status status; // it can be under-review , approved, rejected
 
-    private Integer like;
+    @Column(name = "likes")
+    private Long like;
 
-    private Integer dislike;
 
-    @CreatedDate
+    //    @CreatedDate
     private Date reportTime = new Date();
 
+    @Column(columnDefinition = "geography(Point, 4326)")
     private Point location;
 
-    private boolean isValidated = false;
+    private boolean isActivated = false;
 
 }
 
