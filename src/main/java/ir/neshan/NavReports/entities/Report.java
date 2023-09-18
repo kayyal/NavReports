@@ -25,7 +25,7 @@ public class Report {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private Status status; // it can be under-review , approved, rejected
+    private Status status; // it can be under-review , approved, rejected , expired
 
     @Column(name = "likes")
     private Long like;

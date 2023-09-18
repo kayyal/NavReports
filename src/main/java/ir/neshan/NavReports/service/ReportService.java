@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,4 +46,21 @@ public class ReportService {
         return reportMapper.toDTO(savedReport);
     }
 
+    @Transactional
+    public void deleteRejectedReports() {
+        List<Report> expiredReports = reportRepository.findAllByStatus(Status.REJECTED);
+        reportRepository.deleteAll(expiredReports);
+    }
+
+    @Transactional
+    public void deleteExpiredApprovedReports() {
+        List<Report> approvedReports = reportRepository.findAllByStatus(Status.APPROVED);
+        Date now = new Date();
+        approvedReports.stream()
+                .filter(report -> now.after(new Date(report.getReportTime().getTime() + report.getReportType().getDuration() * 60 * 100)))
+                .forEach(report -> {
+                    report.setStatus(Status.EXPIRED);
+                    reportRepository.save(report);
+                });
+    }
 }
