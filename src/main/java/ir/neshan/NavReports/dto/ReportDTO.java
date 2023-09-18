@@ -1,7 +1,7 @@
 package ir.neshan.NavReports.dto;
 
-import ir.neshan.NavReports.entities.Operator;
 import ir.neshan.NavReports.entities.ReportType;
+import ir.neshan.NavReports.entities.Status;
 import ir.neshan.NavReports.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,13 +22,9 @@ public class ReportDTO {
 
     private User user;
 
-    private Operator operator;
-
-    private String status; // it can be under-review , approved, rejected
+    private Status status; // it can be under-review , approved, rejected
 
     private Integer like;
-
-    private Integer dislike;
 
     private Date reportTime = new Date();
 

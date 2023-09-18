@@ -13,7 +13,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class Report {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,13 +24,11 @@ public class Report {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     @Enumerated(EnumType.STRING)
     private Status status; // it can be under-review , approved, rejected
 
     @Column(name = "likes")
     private Long like;
-
 
     //    @CreatedDate
     private Date reportTime = new Date();
@@ -40,6 +37,5 @@ public class Report {
     private Point location;
 
     private boolean isActivated = false;
-
 }
 

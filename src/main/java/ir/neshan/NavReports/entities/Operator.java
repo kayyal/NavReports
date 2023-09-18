@@ -14,12 +14,10 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class Operator {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
     private String password;
-
 }

@@ -1,39 +1,48 @@
 package ir.neshan.NavReports.service;
 
+import ir.neshan.NavReports.dto.ReportDTO;
 import ir.neshan.NavReports.entities.Report;
-import ir.neshan.NavReports.repositories.OperatorRepository;
+import ir.neshan.NavReports.entities.Status;
+import ir.neshan.NavReports.exception.DuplicateReportException;
+import ir.neshan.NavReports.mapper.ReportMapper;
 import ir.neshan.NavReports.repositories.ReportRepository;
+import ir.neshan.NavReports.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ReportService {
-    ReportRepository reportRepository;
-    OperatorRepository operatorRepository;
+    private final ReportRepository reportRepository;
+    private final UserRepository userRepository;
+    private ReportMapper reportMapper;
 
-    public Report addReport(Report report, Long operatorId) {
-//        // Check if operator exists and is authorized
-//        Operator operator = operatorRepository.findById(operatorId)
-//                .orElseThrow(() -> new RuntimeException("Operator not found"));
-//
-//        // If operator is not authorized, throw an exception
-////        if (!operator.isAuthorized()) {
-////            throw new RuntimeException("Operator is not authorized to approve reports");
-////        }
-//
-//        // Check if report already exist within the radius and timeframe
-////        String query = "SELECT * FROM reports WHERE ST_DWithin(geometry, ST_GeomFromText('POINT(" + report.getLongitude() + " " + report.getLatitude() + ")',4326), 0.0001) AND report_time > NOW() - INTERVAL '5 MINUTE' AND report_type_id = " + report.getReportType().getId();
-////        List<Report> reportList = reportRepository.nativeQuery(query);
-//
-////        if (reportList.size() > 0) {
-////            throw new RuntimeException("Duplicate report");
-////        }
-//
-//        report.setReportTime(new Date(97897));
-//        report.setOperator(operator);
-//
-//        return reportRepository.save(report);
-        return new Report();
+
+    @Transactional
+    public ReportDTO createReport(ReportDTO reportDTO) {
+        // Check if a report from the same user with the same type and location already exists
+        Optional<Report> existingReport = reportRepository.findByUserAndReportTypeAndLocation(
+                reportDTO.getUser(), reportDTO.getReportType(), reportDTO.getLocation()
+        );
+        if (existingReport.isPresent()) {
+            // If the existing report was created within the last 2 minutes, consider it a duplicate
+            if (existingReport.get().getReportTime().after(new Date(System.currentTimeMillis() - 2 * 60 * 1000))) {
+                throw new DuplicateReportException("Duplicate report detected");
+            }
+        }
+
+        // Convert DTO to entity
+        Report report = reportMapper.toEntity(reportDTO);
+        // Set the status to UNDER_REVIEW
+        report.setStatus(Status.UNDER_REVIEW);
+        // Save the entity
+        Report savedReport = reportRepository.save(report);
+        // Convert the saved entity back to DTO
+        return reportMapper.toDTO(savedReport);
     }
+
 }
