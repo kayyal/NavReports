@@ -4,5 +4,4 @@ public enum Type {
     ACCIDENT,
     TRAFFIC,
     POLICE,
-
 }

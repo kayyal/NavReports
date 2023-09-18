@@ -26,8 +26,8 @@ public class ReportService {
     @Transactional
     public ReportDTO createReport(ReportDTO reportDTO) {
         // Check if a report from the same user with the same type and location already exists
-        Optional<Report> existingReport = reportRepository.findByUserAndReportTypeAndLocation(
-                reportDTO.getUser(), reportDTO.getReportType(), reportDTO.getLocation()
+        Optional<Report> existingReport = reportRepository.findByUserIdAndReportTypeAndLocation(
+                reportDTO.getUserId(), reportDTO.getReportType(), reportDTO.getLocation()
         );
         if (existingReport.isPresent()) {
             // If the existing report was created within the last 2 minutes, consider it a duplicate
@@ -63,4 +63,6 @@ public class ReportService {
                     reportRepository.save(report);
                 });
     }
+
+
 }
