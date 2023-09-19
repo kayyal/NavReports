@@ -3,7 +3,9 @@ package ir.neshan.NavReports.service;
 import ir.neshan.NavReports.dto.ReportDTO;
 import ir.neshan.NavReports.entities.Report;
 import ir.neshan.NavReports.entities.Status;
+import ir.neshan.NavReports.entities.User;
 import ir.neshan.NavReports.exception.DuplicateReportException;
+import ir.neshan.NavReports.exception.UserNotFoundException;
 import ir.neshan.NavReports.mapper.ReportMapper;
 import ir.neshan.NavReports.repositories.ReportRepository;
 import ir.neshan.NavReports.repositories.UserRepository;
@@ -23,13 +25,20 @@ public class ReportService {
     private ReportMapper reportMapper;
 
 
-    @Transactional
-    public ReportDTO createReport(ReportDTO reportDTO) {
+    public ReportDTO createReport(ReportDTO reportDTO) throws UserNotFoundException {
         Report report = reportMapper.toEntity(reportDTO);
+        Optional<User> userOptional = userRepository.findById(reportDTO.getUserId());
+        report.setReportTime(new Date());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            report.setUser(user);
+        }
+        report.setType(reportDTO.getType());
+        report.setMessage(reportDTO.getMessage());
 
-        // Check if a report from the same user with the same type and location already exists
-        Optional<Report> existingReport = reportRepository.findByUserIdAndReportTypeAndLocation(
-                report.getUser().getId(), report.getReportType(), report.getLocation()
+
+        Optional<Report> existingReport = reportRepository.findByUserIdAndTypeAndLocation(
+                reportDTO.getUserId(), report.getType(), report.getLocation()
         );
         if (existingReport.isPresent()) {
             // If the existing report was created within the last 2 minutes, consider it a duplicate
@@ -58,7 +67,7 @@ public class ReportService {
         List<Report> approvedReports = reportRepository.findAllByStatus(Status.APPROVED);
         Date now = new Date();
         approvedReports.stream()
-                .filter(report -> now.after(new Date(report.getReportTime().getTime() + report.getReportType().getDuration() * 60 * 100)))
+                .filter(report -> now.after(new Date(report.getReportTime().getTime() + report.getDuration() * 60 * 100)))
                 .forEach(report -> {
                     report.setStatus(Status.EXPIRED);
                     reportRepository.save(report);

@@ -3,6 +3,7 @@ package ir.neshan.NavReports.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -20,8 +21,15 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    private ReportType reportType;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    private ReportType reportType;
+
+    @Enumerated(EnumType.STRING)
+    private Type type;
+
+    private String message;
+
+    private Long duration = 20L;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,8 +42,10 @@ public class Report {
     private Set<Like> likes = new HashSet<>();//use trigger in view everytier a like anjam shod bere bishataer bekonad
 
     //    private Long like; // uniq for user
-    //    @CreatedDate
+    @CreatedDate
     private Date reportTime = new Date();
+
+
     @Column(columnDefinition = "geography(Point, 4326)")
     private Point location;
 

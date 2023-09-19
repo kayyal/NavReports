@@ -2,6 +2,7 @@ package ir.neshan.NavReports.controller;
 
 import ir.neshan.NavReports.dto.ReportDTO;
 import ir.neshan.NavReports.dto.UserDTO;
+import ir.neshan.NavReports.exception.UserNotFoundException;
 import ir.neshan.NavReports.mapper.ReportMapper;
 import ir.neshan.NavReports.service.ReportService;
 import ir.neshan.NavReports.service.UserService;
@@ -30,7 +31,7 @@ public class UserController {
 
 
     @PostMapping("/create/report")
-    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) {
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) throws UserNotFoundException {
         ReportDTO reportSummaryDTO = reportService.createReport(reportDTO);
         return new ResponseEntity<>(reportSummaryDTO, HttpStatus.CREATED);
     }

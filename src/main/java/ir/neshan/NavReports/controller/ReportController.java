@@ -24,7 +24,7 @@ public class ReportController {
             reportService.createReport(reportDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("report added successfully!");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add report" + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to add report -> " + e.getMessage());
         }
     }
 }
