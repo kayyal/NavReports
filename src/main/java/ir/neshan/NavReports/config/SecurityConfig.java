@@ -26,7 +26,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailService(PasswordEncoder passwordEncoder) {
-
         System.out.println("userProperties.getUsers() = " + userProperties.getUserList());
         System.out.println("operatorProperties.getOperators() = " + userProperties.getOperatorList());
 
@@ -43,10 +42,7 @@ public class SecurityConfig {
                         .roles(OPERATOR)
                         .build()
                 ).collect(Collectors.toList());
-
         userDetailsList1.addAll(operator1);
-
-
         return new InMemoryUserDetailsManager(userDetailsList1);
     }
 

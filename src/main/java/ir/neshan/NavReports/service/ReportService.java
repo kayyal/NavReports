@@ -27,18 +27,29 @@ public class ReportService {
 
     public ReportDTO createReport(ReportDTO reportDTO) throws UserNotFoundException {
         Report report = reportMapper.toEntity(reportDTO);
-        Optional<User> userOptional = userRepository.findById(reportDTO.getUserId());
-        report.setReportTime(new Date());
+        setUser(report, reportDTO.getUserId());
+        setReportTime(report);
+        checkForDuplicateReport(reportDTO);
+        setStatus(report);
+        return saveReport(report);
+    }
+
+    private void setUser(Report report, Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            System.out.println("user.getId() =====>> " + user.getId());
             report.setUser(user);
         }
-        report.setType(reportDTO.getType());
-        report.setMessage(reportDTO.getMessage());
+    }
 
+    private void setReportTime(Report report) {
+        report.setReportTime(new Date());
+    }
 
+    private void checkForDuplicateReport(ReportDTO reportDTO) {
         Optional<Report> existingReport = reportRepository.findByUserIdAndTypeAndLocation(
-                reportDTO.getUserId(), report.getType(), report.getLocation()
+                reportDTO.getUserId(), reportDTO.getType(), reportDTO.getLocation()
         );
         if (existingReport.isPresent()) {
             // If the existing report was created within the last 2 minutes, consider it a duplicate
@@ -46,8 +57,13 @@ public class ReportService {
                 throw new DuplicateReportException("Duplicate report detected");
             }
         }
-        // Set the status to UNDER_REVIEW
+    }
+
+    private void setStatus(Report report) {
         report.setStatus(Status.UNDER_REVIEW);
+    }
+
+    private ReportDTO saveReport(Report report) {
         // Save the entity
         Report savedReport = reportRepository.save(report);
         // Convert the saved entity back to DTO
