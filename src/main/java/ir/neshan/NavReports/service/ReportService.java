@@ -46,8 +46,6 @@ public class ReportService {
                 throw new DuplicateReportException("Duplicate report detected");
             }
         }
-
-        // Convert DTO to entity
         // Set the status to UNDER_REVIEW
         report.setStatus(Status.UNDER_REVIEW);
         // Save the entity
