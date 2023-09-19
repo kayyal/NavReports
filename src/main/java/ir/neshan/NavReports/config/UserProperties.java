@@ -1,5 +1,6 @@
 package ir.neshan.NavReports.config;
 
+import ir.neshan.NavReports.entities.Operator;
 import ir.neshan.NavReports.entities.User;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -13,4 +14,6 @@ import java.util.List;
 @Configuration
 public class UserProperties {
     private final List<User> userList = new ArrayList<>();
+    private final List<Operator> operatorList = new ArrayList<>();
+
 }

@@ -6,8 +6,6 @@ users:
     - name: mina
       email: mina@gmail.com
       password: 1111
-
-operators:
   operatorList:
     - name: ali
       email: alavi

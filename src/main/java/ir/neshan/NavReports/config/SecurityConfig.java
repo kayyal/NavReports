@@ -20,17 +20,15 @@ import java.util.stream.Collectors;
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
-
     public static final String USER = "USER";
     public static final String OPERATOR = "OPERATOR";
     private final UserProperties userProperties;
-    private final OperatorProperties operatorProperties;
 
     @Bean
     public UserDetailsService userDetailService(PasswordEncoder passwordEncoder) {
 
         System.out.println("userProperties.getUsers() = " + userProperties.getUserList());
-        System.out.println("operatorProperties.getOperators() = " + operatorProperties.getOperatorList());
+        System.out.println("operatorProperties.getOperators() = " + userProperties.getOperatorList());
 
         List<UserDetails> userDetailsList1 = userProperties.getUserList()
                 .stream()
@@ -39,7 +37,7 @@ public class SecurityConfig {
                         .roles(USER)
                         .build())
                 .collect(Collectors.toList());
-        List<UserDetails> operator1 = operatorProperties.getOperatorList().stream()
+        List<UserDetails> operator1 = userProperties.getOperatorList().stream()
                 .map(operator -> User.withUsername(operator.getUsername())
                         .password(passwordEncoder.encode(operator.getPassword()))
                         .roles(OPERATOR)
