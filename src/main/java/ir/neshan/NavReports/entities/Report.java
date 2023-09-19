@@ -21,9 +21,6 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    private ReportType reportType;
-
     @Enumerated(EnumType.STRING)
     private Type type;
 
@@ -38,10 +35,9 @@ public class Report {
     @Enumerated(EnumType.STRING)
     private Status status; // it can be under-review , approved, rejected , expired
 
-    @OneToMany
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
     private Set<Like> likes = new HashSet<>();//use trigger in view everytier a like anjam shod bere bishataer bekonad
 
-    //    private Long like; // uniq for user
     @CreatedDate
     private Date reportTime = new Date();
 
