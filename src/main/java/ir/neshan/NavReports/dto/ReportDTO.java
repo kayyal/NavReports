@@ -1,31 +1,18 @@
 package ir.neshan.NavReports.dto;
 
-import ir.neshan.NavReports.entities.ReportType;
-import ir.neshan.NavReports.entities.Status;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.postgis.Point;
+import org.locationtech.jts.geom.Point;
 
-import java.util.Date;
+import java.io.Serializable;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ReportDTO {
+public class ReportDTO implements Serializable {
 
-
-    private ReportType reportType;
+    private ReportTypeDTO reportTypeDTO;
 
     private Long userId;
-
-    private Status status; // it can be under-review , approved, rejected
-
-    private Long like;
-
-    private Date reportTime = new Date();
 
     private Point location;
 

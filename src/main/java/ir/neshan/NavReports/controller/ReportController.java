@@ -18,7 +18,7 @@ public class ReportController {
     private final ReportService reportService;
 
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<String> addReport(@RequestBody ReportDTO reportDTO) {
         try {
             reportService.createReport(reportDTO);

@@ -8,10 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Mapper
 public interface OperatorMapper {
-
     Operator toEntity(OperatorDTO operatorDTO);
 
     OperatorDTO toDTO(Operator operator);
-
-
 }

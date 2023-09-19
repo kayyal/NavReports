@@ -25,9 +25,11 @@ public class ReportService {
 
     @Transactional
     public ReportDTO createReport(ReportDTO reportDTO) {
+        Report report = reportMapper.toEntity(reportDTO);
+
         // Check if a report from the same user with the same type and location already exists
         Optional<Report> existingReport = reportRepository.findByUserIdAndReportTypeAndLocation(
-                reportDTO.getUserId(), reportDTO.getReportType(), reportDTO.getLocation()
+                report.getUser().getId(), report.getReportType(), report.getLocation()
         );
         if (existingReport.isPresent()) {
             // If the existing report was created within the last 2 minutes, consider it a duplicate
@@ -37,7 +39,6 @@ public class ReportService {
         }
 
         // Convert DTO to entity
-        Report report = reportMapper.toEntity(reportDTO);
         // Set the status to UNDER_REVIEW
         report.setStatus(Status.UNDER_REVIEW);
         // Save the entity

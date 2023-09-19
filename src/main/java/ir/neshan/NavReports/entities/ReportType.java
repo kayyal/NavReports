@@ -20,5 +20,5 @@ public class ReportType {
 
     private String message;
 
-    private Long duration;
+    private Long duration = 20L;
 }
