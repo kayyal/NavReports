@@ -60,9 +60,13 @@ login and operation should also be considered.
 ### Create a User
 
  ```bash
-curl --location 'http://localhost:8080/signUp/create'
---header 'Content-Type: application/json'
---data-raw '{ "name": "amir", "email": "amir@gmail.com", "password": "1234" }'
+curl --location 'http://localhost:8080/signUp/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "Sophia",
+    "email": "sophia@gmail.com",
+    "password": "p@ssw0rd!"
+}'
 
 ```
 
