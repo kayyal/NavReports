@@ -44,16 +44,16 @@ login and operation should also be considered.
 ### Installation
 
 1. Clone the repository
-   git clone https://github.com/yourusername/yourrepository.git
+   ```git clone https://github.com/kayyal/NavReports.git```
 
 3. Navigate to the project directory
-   cd navReports
+   ```cd navReports```
 
 5. Build the project
-   mvn clean install
+   ```mvn clean install```
 
 4. Run the application
-   mvn spring-boot:run
+   ``` mvn spring-boot:run```
 
 ## Usage
 
@@ -87,10 +87,15 @@ curl --location --request GET 'http://localhost:8080/api/user/route'
 --header 'Content-Type: application/json'
 --header 'Authorization: Basic U29waGlhOnBAc3N3MHJkIQ=='
 --data '{ "type": "LineString", "
-coordinates": [ [59.5378346524856, 36.300370980492104], [59.536558504403104, 36.29936586959842], [59.53449926545366, 36.300628099803745], [59.53299109044863, 36.30013723492836], [59.532904080352694, 36.3008384695182] ] }'
+coordinates": [ [59.5378346524856, 36.300370980492104], 
+              [59.536558504403104, 36.29936586959842], 
+              [59.53449926545366, 36.300628099803745], 
+              [59.53299109044863, 36.30013723492836],
+              [59.532904080352694, 36.3008384695182] ] }'
 ```
 
 ### Find the hour with the most accident report
+
 ```bash
 curl --location 'http://localhost:8080/reports/accidents/hour' \
 --header 'Authorization: Basic RGF2aWQ6bXlzZWNyZXRwYXNzd29yZA==' \
