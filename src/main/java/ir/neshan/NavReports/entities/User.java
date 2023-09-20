@@ -1,5 +1,6 @@
 package ir.neshan.NavReports.entities;
 
+import ir.neshan.NavReports.config.SecurityConfig;
 import ir.neshan.NavReports.exception.ReportNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,9 +23,12 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", unique = true)
     private String name;
 
     private String email;
+
     private String password;
 
     @OneToMany(mappedBy = "user")
@@ -44,12 +48,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("Operator"));
+        return Collections.singleton(new SimpleGrantedAuthority(SecurityConfig.USER));
     }
 
     @Override
     public String getUsername() {
-        return name;
+        return this.name;
     }
 
 

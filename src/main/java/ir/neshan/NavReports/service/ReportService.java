@@ -25,19 +25,18 @@ public class ReportService {
     private ReportMapper reportMapper;
 
 
-    public ReportDTO createReport(ReportDTO reportDTO) throws UserNotFoundException {
+    public ReportDTO createReport(ReportDTO reportDTO, String name) throws UserNotFoundException {
         Report report = reportMapper.toEntity(reportDTO);
-        setUser(report, reportDTO.getUserId());
+        setUser(report, name);
         setReportTime(report);
         checkForDuplicateReport(reportDTO);
         setStatus(report);
         return saveReport(report);
     }
 
-    private void setUser(Report report, Long userId) throws UserNotFoundException {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+    private void setUser(Report report, String name) throws UserNotFoundException {
+        User user = userRepository.findByName(name);
+        if (user != null) {
             report.setUser(user);
         } else {
             throw new UserNotFoundException("there is no user with id you asked !");
@@ -46,7 +45,9 @@ public class ReportService {
 
     private void setReportTime(Report report) {
         report.setReportTime(new Date());
+        report.setDuration(30 * 60 * 1000L);
     }
+
 
     private void checkForDuplicateReport(ReportDTO reportDTO) {
         Optional<Report> existingReport = reportRepository.findByUserIdAndTypeAndLocation(

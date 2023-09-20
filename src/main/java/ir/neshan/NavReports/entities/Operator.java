@@ -1,6 +1,7 @@
 package ir.neshan.NavReports.entities;
 
 
+import ir.neshan.NavReports.config.SecurityConfig;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +30,7 @@ public class Operator implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+        return Collections.singleton(new SimpleGrantedAuthority(SecurityConfig.OPERATOR));
     }
 
     @Override

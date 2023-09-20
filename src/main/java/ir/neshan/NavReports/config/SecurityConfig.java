@@ -1,21 +1,22 @@
 package ir.neshan.NavReports.config;
 
 
+import ir.neshan.NavReports.repositories.UserRepository;
+import ir.neshan.NavReports.service.MyUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @AllArgsConstructor
@@ -23,27 +24,11 @@ public class SecurityConfig {
     public static final String USER = "USER";
     public static final String OPERATOR = "OPERATOR";
     private final UserProperties userProperties;
+    private final MyUserDetailsService userDetailsService;
 
     @Bean
-    public UserDetailsService userDetailService(PasswordEncoder passwordEncoder) {
-        System.out.println("userProperties.getUsers() = " + userProperties.getUserList());
-        System.out.println("operatorProperties.getOperators() = " + userProperties.getOperatorList());
-
-        List<UserDetails> userDetailsList1 = userProperties.getUserList()
-                .stream()
-                .map(user -> User.withUsername(user.getUsername())
-                        .password(passwordEncoder.encode(user.getPassword()))
-                        .roles(USER)
-                        .build())
-                .collect(Collectors.toList());
-        List<UserDetails> operator1 = userProperties.getOperatorList().stream()
-                .map(operator -> User.withUsername(operator.getUsername())
-                        .password(passwordEncoder.encode(operator.getPassword()))
-                        .roles(OPERATOR)
-                        .build()
-                ).collect(Collectors.toList());
-        userDetailsList1.addAll(operator1);
-        return new InMemoryUserDetailsManager(userDetailsList1);
+    public UserDetailsService userDetailService(UserRepository userRepository) {
+        return new MyUserDetailsService(userRepository);
     }
 
     @Bean
@@ -51,8 +36,9 @@ public class SecurityConfig {
         http
                 .csrf(c -> c.disable())
                 .authorizeRequests()
-                .requestMatchers("/operator/**").hasRole(OPERATOR)
-                .requestMatchers("/report/**", "/api/**").hasRole(USER)
+                .requestMatchers(HttpMethod.POST, "/signUp/**").permitAll()
+                .requestMatchers("/operator/**").hasAnyAuthority()
+                .requestMatchers("/report/**", "/api/**").hasAnyAuthority(USER, OPERATOR)
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -63,5 +49,18 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

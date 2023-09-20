@@ -11,6 +11,7 @@ import ir.neshan.NavReports.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.postgis.LineString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +23,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final ReportRepository reportRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     public User createUser(UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
         return user;
     }
@@ -36,20 +39,20 @@ public class UserService {
 
 
     @Transactional
-    public void likeDislikeReport(Long userId, Long reportId, boolean isLike) throws ReportNotFoundException {
-        Optional<User> user = userRepository.findById(userId); // method to get a User by its id
+    public void likeDislikeReport(String username, Long reportId, boolean isLike) throws ReportNotFoundException {
+        User user = userRepository.findByName(username); // method to get a User by its id
         Optional<Report> report = reportRepository.findById(reportId); // method to get a Report by its id
-        if (user.isEmpty() || report.isEmpty()) throw new ReportNotFoundException("the report is not existed");
+        if (user == null || report.isEmpty()) throw new ReportNotFoundException("the report is not existed");
 
         if (isLike) {
             Like like = new Like();
-            like.setUser(user.get());
+            like.setUser(user);
             like.setReport(report.get());
             report.get().getLikesUsers().add(like);
             report.get().setDuration(report.get().getDuration() + 2);
         } else {
             Like like = report.get().getLikesUsers().stream()
-                    .filter(likeee -> likeee.getUser().getId().equals(userId))
+                    .filter(l -> l.getUser().getUsername().equals(username))
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("User has not liked this report"));
 

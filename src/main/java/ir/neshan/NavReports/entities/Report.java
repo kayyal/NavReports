@@ -26,7 +26,7 @@ public class Report {
 
     private String message;
 
-    private Long duration = 20L;
+    private Long duration ;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

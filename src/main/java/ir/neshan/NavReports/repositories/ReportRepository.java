@@ -18,7 +18,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     List<Report> findByUserId(Long userId);
 
-    @Query(value = "SELECT r FROM Report r WHERE ST_DWithin(r.location, :route, 100/111.32) = true")
+    @Query(value = "SELECT r FROM Report r WHERE ST_DWithin(r.location, :route, 100 , false ) = true")
     List<Report> findReportsNearRoute(@Param("route") LineString route);
 
     List<Report> findAllByStatus(Status status);

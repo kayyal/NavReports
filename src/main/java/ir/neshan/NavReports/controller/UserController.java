@@ -2,7 +2,6 @@ package ir.neshan.NavReports.controller;
 
 import ir.neshan.NavReports.dto.ReportDTO;
 import ir.neshan.NavReports.dto.UserDTO;
-import ir.neshan.NavReports.entities.User;
 import ir.neshan.NavReports.exception.ReportNotFoundException;
 import ir.neshan.NavReports.exception.UserNotFoundException;
 import ir.neshan.NavReports.mapper.ReportMapper;
@@ -10,7 +9,6 @@ import ir.neshan.NavReports.service.ReportService;
 import ir.neshan.NavReports.service.UserService;
 import lombok.AllArgsConstructor;
 import org.postgis.LineString;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,8 +34,14 @@ public class UserController {
 
 
     @PostMapping("/create/report")
-    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO) throws UserNotFoundException {
-        ReportDTO reportSummaryDTO = reportService.createReport(reportDTO);
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportDTO, Authentication authentication) throws UserNotFoundException {
+        String name = authentication.getName();
+        System.out.println("name ====>>> " + name);
+//        System.out.println("authentication.getPrincipal().toString() = " + authentication.getPrincipal().toString());
+//        ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).
+//        Long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
+        ReportDTO reportSummaryDTO = reportService.createReport(reportDTO, name);
         return new ResponseEntity<>(reportSummaryDTO, HttpStatus.CREATED);
     }
 
@@ -52,9 +56,10 @@ public class UserController {
 
     @PostMapping("/reports/{reportId}/like")
     public ResponseEntity<Void> likeReport(@PathVariable Long reportId, Authentication authentication) {
-        Long userId = ((User) authentication.getPrincipal()).getId();
+        String username = authentication.getName();
+//        Long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         try {
-            userService.likeDislikeReport(userId, reportId, true);
+            userService.likeDislikeReport(username, reportId, true);
         } catch (ReportNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -63,9 +68,10 @@ public class UserController {
 
     @PostMapping("/reports/{reportId}/dislike")
     public ResponseEntity<Void> dislikeReport(@PathVariable Long reportId, Authentication authentication) {
-        Long userId = ((User) authentication.getPrincipal()).getId();
+        String username = authentication.getName();
+//        Long userId = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         try {
-            userService.likeDislikeReport(userId, reportId, false);
+            userService.likeDislikeReport(username, reportId, false);
         } catch (ReportNotFoundException e) {
             throw new RuntimeException(e);
         }
