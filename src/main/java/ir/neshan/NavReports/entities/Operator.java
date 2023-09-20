@@ -1,11 +1,8 @@
 package ir.neshan.NavReports.entities;
 
 
-import ir.neshan.NavReports.config.UserProperties;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import ir.neshan.NavReports.config.SecurityConfig;
+import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,13 +21,19 @@ public class Operator implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", unique = true)
     private String name;
+
+    @Column(name = "email", unique = true)
     private String email;
+
+
     private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(UserProperties.OPERATOR_ROLE));
+        return Collections.singleton(new SimpleGrantedAuthority(SecurityConfig.OPERATOR));
     }
 
     @Override

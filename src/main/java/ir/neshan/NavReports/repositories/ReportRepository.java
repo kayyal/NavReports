@@ -21,5 +21,8 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query(value = "SELECT r FROM Report r WHERE ST_DWithin(r.location, :route, 100 , false ) = true")
     List<Report> findReportsNearRoute(@Param("route") LineString route);
 
+    @Query(value = "SELECT HOUR(r.reportTime) AS hour, COUNT(r) AS count FROM Report r WHERE r.type = :type GROUP BY HOUR(r.reportTime) ORDER BY COUNT(r) DESC")
+    List<Object[]> findAccidentCountByHour(@Param("type") Type type);
+
     List<Report> findAllByStatus(Status status);
 }

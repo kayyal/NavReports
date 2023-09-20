@@ -90,4 +90,12 @@ curl --location --request GET 'http://localhost:8080/api/user/route'
 coordinates": [ [59.5378346524856, 36.300370980492104], [59.536558504403104, 36.29936586959842], [59.53449926545366, 36.300628099803745], [59.53299109044863, 36.30013723492836], [59.532904080352694, 36.3008384695182] ] }'
 ```
 
+### Find the hour with the most accident report
+```bash
+curl --location 'http://localhost:8080/reports/accidents/hour' \
+--header 'Authorization: Basic RGF2aWQ6bXlzZWNyZXRwYXNzd29yZA==' \
+--header 'Cookie: JSESSIONID=2B74679175AA83898F4E3C84A15DA843' \
+--data ''
+```
+
 

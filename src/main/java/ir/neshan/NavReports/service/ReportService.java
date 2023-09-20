@@ -3,6 +3,7 @@ package ir.neshan.NavReports.service;
 import ir.neshan.NavReports.dto.ReportDTO;
 import ir.neshan.NavReports.entities.Report;
 import ir.neshan.NavReports.entities.Status;
+import ir.neshan.NavReports.entities.Type;
 import ir.neshan.NavReports.entities.User;
 import ir.neshan.NavReports.exception.DuplicateReportException;
 import ir.neshan.NavReports.exception.UserNotFoundException;
@@ -88,6 +89,19 @@ public class ReportService {
                     report.setStatus(Status.EXPIRED);
                     reportRepository.save(report);
                 });
+    }
+
+    public String getHourWithMostAccidents() {
+        List<Object[]> result = reportRepository.findAccidentCountByHour(Type.ACCIDENT);
+
+        if (result.isEmpty()) {
+            return "No accidents found.";
+        }
+
+        Integer hour = (Integer) result.get(0)[0];
+        Long count = (Long) result.get(0)[1];
+
+        return "Hour with the most accidents: " + hour + ", Number of accidents: " + count;
     }
 
 
