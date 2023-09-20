@@ -29,14 +29,15 @@ public class Report {
     private Long duration = 20L;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Enumerated(EnumType.STRING)
     private Status status; // it can be under-review , approved, rejected , expired
 
-    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL)
-    private Set<Like> likes = new HashSet<>();//use trigger in view everytier a like anjam shod bere bishataer bekonad
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Like> likesUsers = new HashSet<>();
+
 
     @CreatedDate
     private Date reportTime = new Date();

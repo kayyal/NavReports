@@ -34,12 +34,13 @@ public class ReportService {
         return saveReport(report);
     }
 
-    private void setUser(Report report, Long userId) {
+    private void setUser(Report report, Long userId) throws UserNotFoundException {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            System.out.println("user.getId() =====>> " + user.getId());
             report.setUser(user);
+        } else {
+            throw new UserNotFoundException("there is no user with id you asked !");
         }
     }
 
