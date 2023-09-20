@@ -8,7 +8,7 @@ import ir.neshan.NavReports.mapper.ReportMapper;
 import ir.neshan.NavReports.service.ReportService;
 import ir.neshan.NavReports.service.UserService;
 import lombok.AllArgsConstructor;
-import org.postgis.LineString;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

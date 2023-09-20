@@ -1,18 +1,11 @@
-users:
-  userList:
-    - name: amir
-      email: amir@gmail.com
-      password: 1234
-    - name: mina
-      email: mina@gmail.com
-      password: 1111
-  operatorList:
-    - name: ali
-      email: alavi
-      password: 4321
-    - name: ahmad
-      email: ahamadi@gmail.com
-      password: 4444
+report:
+  duration: 30 * 60 *1000
+  incrementTime: 2
+  decrementTime: 2
+
+user:
+  userRole: USER
+  operatorRole: OPERATOR
 
 spring:
   datasource:

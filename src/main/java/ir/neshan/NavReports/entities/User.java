@@ -1,6 +1,6 @@
 package ir.neshan.NavReports.entities;
 
-import ir.neshan.NavReports.config.SecurityConfig;
+import ir.neshan.NavReports.config.UserProperties;
 import ir.neshan.NavReports.exception.ReportNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,7 +48,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(SecurityConfig.USER));
+        return Collections.singleton(new SimpleGrantedAuthority(UserProperties.USER_ROLE));
     }
 
     @Override

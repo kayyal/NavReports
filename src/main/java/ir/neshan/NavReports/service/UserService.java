@@ -10,7 +10,7 @@ import ir.neshan.NavReports.repositories.ReportRepository;
 import ir.neshan.NavReports.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.postgis.LineString;
+import org.locationtech.jts.geom.LineString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

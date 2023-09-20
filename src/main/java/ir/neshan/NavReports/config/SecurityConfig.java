@@ -21,9 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
-    public static final String USER = "USER";
-    public static final String OPERATOR = "OPERATOR";
-    private final UserProperties userProperties;
     private final MyUserDetailsService userDetailsService;
 
     @Bean
@@ -38,7 +35,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.POST, "/signUp/**").permitAll()
                 .requestMatchers("/operator/**").hasAnyAuthority()
-                .requestMatchers("/report/**", "/api/**").hasAnyAuthority(USER, OPERATOR)
+                .requestMatchers("/report/**", "/api/**").hasAnyAuthority(UserProperties.USER_ROLE, UserProperties.OPERATOR_ROLE)
                 .anyRequest()
                 .authenticated()
                 .and()
